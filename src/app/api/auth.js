@@ -6,24 +6,7 @@ const options = {
   },
 };
 
-// Define types for the API functions
-interface LoginCredentials {
-  username: string;
-  password: string;
-}
-
-interface RegisterCredentials {
-  username: string;
-  password: string;
-}
-
-interface AuthResponse {
-  success: boolean;
-  message?: string;
-  data?: any;
-}
-
-export async function authLogin({ username, password }: LoginCredentials): Promise<AuthResponse> {
+export async function authLogin({ username, password }) {
   try {
     console.log('Attempting login to:', BASE_URL + '/login');
     const response = await fetch(BASE_URL + '/login', {
@@ -42,20 +25,19 @@ export async function authLogin({ username, password }: LoginCredentials): Promi
       throw new Error(data.error || data.message || 'Login failed');
     }
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    console.log('Login Error:', errorMessage);
+    console.log('Login Error:', error.message);
     throw error;
   }
 }
 
-export async function authRegister({ username, password }: RegisterCredentials): Promise<AuthResponse> {
+export async function authRegister({ password, username }) {
   try {
     const response = await fetch(BASE_URL + '/register', {
       method: 'POST',
       ...options,
       body: JSON.stringify({
-        username,
         password,
+        username,
       }),
     });
     const data = await response.json();
@@ -66,8 +48,7 @@ export async function authRegister({ username, password }: RegisterCredentials):
       throw new Error(data.message || 'Registration failed');
     }
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    console.log('Registration Error:', errorMessage);
+    console.log('Registration Error:', error.message);
     throw error;
   }
 }
